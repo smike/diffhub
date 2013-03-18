@@ -1,0 +1,16 @@
+.empty-line {
+  background-color: #dddddd;
+}
+
+.side-left {
+  width: 50%;
+  float: left;
+}
+.side-right {
+  width: 50%;
+  float: right;
+}
+
+.diff-line {
+  font-size: 10px
+}

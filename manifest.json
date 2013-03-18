@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Side-by-side diff view in Github",
+  "version": "1.0",
+  "description": "Adds the option to view diffs side-by-side in Github",
+
+  "content_scripts": [{
+    "matches": ["https://github.com/*", "http://github.com/*"],
+    "js" : ["lib/jquery-1.9.1.min.js", "content.js"],
+    "css" : ["lib/diffhub.css"]
+  }],
+
+ "permissions": [
+   "http://ajax.googleapis.com/"
+ ],
+
+ "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
+}
