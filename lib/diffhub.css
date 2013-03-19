@@ -14,3 +14,27 @@
 .diff-line {
   font-size: 10px
 }
+
+#show-side-diffs,
+#hide-side-diffs {
+  left: -8px;
+}
+
+.side-by-side-diff table {
+  table-layout: fixed;
+}
+
+.side-by-side-diff table tr {
+  word-wrap: break-word;
+}
+
+.side-by-side-diff table td.line_numbers {
+  width: 5%;
+  padding: 0 3px;
+  word-wrap: normal;
+}
+
+.side-by-side-diff table td.diff-line {
+  width: 95%;
+  white-space: normal;
+}
