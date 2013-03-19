@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Side-by-side diff view in Github",
-  "version": "1.0",
+  "version": "0.1",
   "description": "Adds the option to view diffs side-by-side in Github",
 
   "content_scripts": [{
