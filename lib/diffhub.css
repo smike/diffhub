@@ -2,13 +2,15 @@
   background-color: #dddddd;
 }
 
-.side-left {
+#files .file .data .side-by-side-diff td.diff-line {
   width: 50%;
-  float: left;
+  white-space: normal;
+  word-wrap: break-word;
+  vertical-align: top;
 }
-.side-right {
-  width: 50%;
-  float: right;
+
+#files .file .data .side-by-side-diff td.line_numbers {
+  vertical-align: top;
 }
 
 .diff-line {
@@ -20,21 +22,7 @@
   left: -8px;
 }
 
-.side-by-side-diff table {
-  table-layout: fixed;
-}
-
-.side-by-side-diff table tr {
-  word-wrap: break-word;
-}
-
-.side-by-side-diff table td.line_numbers {
-  width: 5%;
-  padding: 0 3px;
-  word-wrap: normal;
-}
-
-.side-by-side-diff table td.diff-line {
-  width: 95%;
-  white-space: normal;
+#files .side-by-side-diff .side-right .add-bubble {
+  left: 100%;
+  margin-left: 5px;
 }
