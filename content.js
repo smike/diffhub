@@ -15,11 +15,12 @@ function toEnsp() {
 }
 
 function evaluatePage() {
-  trackEvent('pageView'); // track all views to get a percentage of usage
-
-  if ($('#toc > p.explain > a.hide-diff-stats').length > 0) {
-    trackEvent('enabled'); // We found a diff on the page, track that.
+  if ($('#toc > p.explain > a.hide-diff-stats').length == 0 || $('#show-side-diffs').length != 0) {
+    // Either we've already modified this page, or there's nothing to do.
+    return;
   }
+
+  trackEvent('enabled'); // We found a diff on the page, track that.
 
   $('#toc > p.explain > a.hide-diff-stats').after(
       '<a href="#" id="show-side-diffs" class="minibutton">Show Side-By-Side Diffs</a>' +
