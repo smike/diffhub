@@ -66,8 +66,40 @@ function createSideBySideDiff() {
     var lines_added = 0;
     var line_rows = [];
     copy.find('tr').each(function () {
-      var lineNumbers = $(this).find('.line_numbers').clone();
+      if ($(this)[0].className == 'inline-comments') {
+        var last_line = line_rows[line_rows.length - 1];
+        var comment_count = $(':nth-child(1)', this).clone()[0];
+        var line_comments = $(':nth-child(2)', this).clone()[0];
+        $(this).empty();
+
+        comment_count.colSpan = 1;
+
+        if ($(last_line).find('.gd').length == 1) {
+          // delete line
+          $(this).append(comment_count);
+          $(this).append(line_comments);
+          $(this).append('<td class="empty-line"/><td class="line_numbers"/>'); // spacer
+        } else if ($(last_line).find('.gi').length == 1) {
+          // insert line
+          $(this).append('<td class="line_numbers"/><td class="empty-line"/>'); // spacer
+          $(this).append(line_comments);
+          $(this).append(comment_count);
+        } else {
+          // common line
+          line_comments.colSpan = 2;
+
+          $(this).append(comment_count);
+          $(this).append(line_comments);
+          $(this).append('<td class="line_numbers"/>');  // spacer
+        }
+
+        line_rows.push(this);
+        return;
+      }
+
+      var lineNumbers = $(this).find('.line_numbers');
       if ($(this).find('.gd').length == 1) {
+        // delete line
         lines_deleted++;
 
         var line_row = $('<tr></tr>');
@@ -77,11 +109,16 @@ function createSideBySideDiff() {
                     append('<td class="empty-line side-right diff-line line">&nbsp;</td>').
                     append(lineNumbers[1]);
       } else if ($(this).find('.gi').length == 1) {
+        // insert line
         lines_added++;
 
         var line_row;
         if (lines_deleted > 0) {
-          line_row = line_rows[line_rows.length - lines_deleted];
+          var line_row_index = line_rows.length - lines_deleted;
+          if ($(line_rows[line_rows.length - 1])[0].className == 'inline-comments') {
+            line_row_index--;
+          }
+          line_row = line_rows[line_row_index];
           lines_deleted--;
         } else {
           line_row = $('<tr><td></td><td></td><td></td><td></td></tr>');
@@ -93,6 +130,7 @@ function createSideBySideDiff() {
         $(':nth-child(3)', line_row).replaceWith($(this).find('.diff-line').addClass('side-right').each(toEnsp));
         $(':nth-child(4)', line_row).replaceWith(lineNumbers[1]);
       } else {
+        // common line
         // reset
         lines_added = 0;
         lines_deleted = 0;
