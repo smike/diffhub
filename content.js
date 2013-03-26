@@ -2,16 +2,6 @@ function trackEvent(event_name) {
   chrome.extension.sendMessage({track_action: event_name});
 }
 
-trackEvent('pageView'); // track all views to get a percentage of usage.
-
-$('#toc > p.explain > a.hide-diff-stats').after(
-    '<a href="#" id="show-side-diffs" class="minibutton">Show Side-By-Side Diffs</a>' +
-    '<a href="#" id="hide-side-diffs" class="minibutton">Show Unified Diffs</a>');
-
-if ($('#toc > p.explain > a.hide-diff-stats').length > 0) {
-  trackEvent('enabled'); // We found a diff on the page, track that.
-}
-
 function show() {
   $(this).css('display', 'block');
 }
@@ -20,34 +10,46 @@ function hide() {
   $(this).css('display', 'none');
 }
 
-$('#show-side-diffs').bind('click', function() {
-  $(this).each(hide);
-
-  if ($(".side-by-side-diff").length == 0) {
-    createSideBySideDiff();
-  }
-  $('.unified-diff').each(hide);
-  $('.side-by-side-diff').each(show);
-  $('#js-repo-pjax-container').css('width', '90%');
-
-  $('#hide-side-diffs').each(show);
-
-  trackEvent('show-side-by-side'); // track showing of side-by-side diffs
-});
-$('#hide-side-diffs').bind('click', function() {
-  $('.unified-diff').each(show);
-  $('.side-by-side-diff').each(hide);
-
-  $('#js-repo-pjax-container').css('width', '');
-
-  $(this).each(hide);
-  $('#show-side-diffs').each(show);
-
-  trackEvent('show-unified'); // track going back to regular diffs
-}).each(hide);
-
 function toEnsp() {
   $(this).html($(this).html().replace(/&nbsp;/g, '&ensp;'));
+}
+
+function evaluatePage() {
+  trackEvent('pageView'); // track all views to get a percentage of usage
+
+  if ($('#toc > p.explain > a.hide-diff-stats').length > 0) {
+    trackEvent('enabled'); // We found a diff on the page, track that.
+  }
+
+  $('#toc > p.explain > a.hide-diff-stats').after(
+      '<a href="#" id="show-side-diffs" class="minibutton">Show Side-By-Side Diffs</a>' +
+      '<a href="#" id="hide-side-diffs" class="minibutton">Show Unified Diffs</a>');
+
+  $('#show-side-diffs').bind('click', function() {
+    $(this).each(hide);
+
+    if ($(".side-by-side-diff").length == 0) {
+      createSideBySideDiff();
+    }
+    $('.unified-diff').each(hide);
+    $('.side-by-side-diff').each(show);
+    $('#js-repo-pjax-container').css('width', '90%');
+
+    $('#hide-side-diffs').each(show);
+
+    trackEvent('show-side-by-side'); // track showing of side-by-side diffs
+  });
+  $('#hide-side-diffs').bind('click', function() {
+    $('.unified-diff').each(show);
+    $('.side-by-side-diff').each(hide);
+
+    $('#js-repo-pjax-container').css('width', '');
+
+    $(this).each(hide);
+    $('#show-side-diffs').each(show);
+
+    trackEvent('show-unified'); // track going back to regular diffs
+  }).each(hide);
 }
 
 function createSideBySideDiff() {
@@ -108,3 +110,16 @@ function createSideBySideDiff() {
     }
   });
 }
+
+// GitHub uses pjax to to load some pages, which changes the contents and location w/o actually
+// reloading the page. Try to detect when the location changes and re-evaluate page contents.
+var last_location;
+setInterval(function() {
+  if (window.location.href != last_location) {
+  // The content changes a bit after the location does. Wait until evaluating the page.
+    setTimeout(function() {
+      evaluatePage();
+    }, 500);
+    last_location = window.location.href;
+  }
+}, 100);
