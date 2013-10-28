@@ -54,10 +54,10 @@ function evaluatePage() {
 }
 
 function createSideBySideDiff() {
-  $(".diff-table").each(function() {
+  $(".file-diff").each(function() {
     var copy = $(this).clone();
     $(this).addClass('unified-diff');
-    var new_table = $('<table class="side-by-side-diff diff-table line-number-attrs"></table>');
+    var new_table = $('<table class="file-diff file-code side-by-side-diff"></table>');
     $(new_table).each(hide);
 
     $(this).after(new_table);
@@ -105,8 +105,8 @@ function createSideBySideDiff() {
         var line_row = $('<tr></tr>');
         line_rows.push(line_row);
         $(line_row).append(lineNumbers[0]).
-                    append($(this).find('.diff-line').addClass('side-left').each(toEnsp)).
-                    append('<td class="empty-line side-right diff-line line">&nbsp;</td>').
+                    append($(this).find('.file-diff-line').addClass('side-left').each(toEnsp)).
+                    append('<td class="empty-line side-right diff-line-code">&nbsp;</td>').
                     append(lineNumbers[1]);
       } else if ($(this).find('.gi').length == 1) {
         // insert line
@@ -125,9 +125,9 @@ function createSideBySideDiff() {
           line_rows.push(line_row);
 
           $(':nth-child(1)', line_row).replaceWith(lineNumbers[0]); // empty line number
-          $(':nth-child(2)', line_row).replaceWith('<td class="empty-line side-left diff-line line">&nbsp;</td>');
+          $(':nth-child(2)', line_row).replaceWith('<td class="empty-line side-left diff-line-code">&nbsp;</td>');
         }
-        $(':nth-child(3)', line_row).replaceWith($(this).find('.diff-line').addClass('side-right').each(toEnsp));
+        $(':nth-child(3)', line_row).replaceWith($(this).find('.diff-line-code').addClass('side-right').each(toEnsp));
         $(':nth-child(4)', line_row).replaceWith(lineNumbers[1]);
       } else {
         // common line
@@ -137,8 +137,8 @@ function createSideBySideDiff() {
 
         var line_row = $('<tr></tr>');
         $(line_row).append(lineNumbers[0]).
-                    append($(this).find('.diff-line').clone().addClass('side-left').each(toEnsp)).
-                    append($(this).find('.diff-line').clone().addClass('side-right').each(toEnsp)).
+                    append($(this).find('.diff-line-code').clone().addClass('side-left').each(toEnsp)).
+                    append($(this).find('.diff-line-code').clone().addClass('side-right').each(toEnsp)).
                     append(lineNumbers[1]);
         line_rows.push(line_row);
       }
@@ -155,7 +155,7 @@ function createSideBySideDiff() {
 var last_location;
 setInterval(function() {
   if (window.location.href != last_location) {
-  // The content changes a bit after the location does. Wait until evaluating the page.
+    // The content changes a bit after the location does. Wait until evaluating the page.
     setTimeout(function() {
       evaluatePage();
     }, 500);
